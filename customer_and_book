@@ -1,0 +1,24 @@
+class Customer:
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.pay = pay
+
+    @property
+    def fullname(self):
+        return '{} {}'.format(self.first, self.last)
+
+    def __repr__(self):
+        return "Customer('{}','{}','{}')".format(self.first, self.last, self.pay)
+
+
+class Book:
+    def __init__(self, title, author, price):
+        self.title = title
+        self.author = author
+        self.price = price
+
+    def __repr__(self):
+        return "Book('{}','{}')".format(self.title, self.author)
+
+
