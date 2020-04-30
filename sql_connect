@@ -1,0 +1,135 @@
+# SQLite3 connection to the python
+import sqlite3  # importing the sqlite3 frame as a connector
+from customer_and_book import *  # importing Book and Customer classes
+conn = sqlite3.connect('example.db')  # connecting and creating the example.db
+
+c = conn.cursor()  # making a c as cursor of conn
+
+# c.execute('''CREATE TABLE employees (
+#          first text,
+#          last text,
+#          pay integer
+#          )''')
+
+# c.execute('''CREATE TABLE books(
+#         title text,
+#         author text,
+#         price integer
+#         )''')
+
+
+def option():  # option function
+    user = int(input('What is your option:\n1. Go to the Customer menu'
+                     '\n2. Go to the Book menu \n3. Exit the program '))  # input to take user's option
+    if user == 1:  # check 1
+        print('Welcome to the Customer Menu')  # printing menu
+        # Giving customer option in the customer menu
+        customer_option = int(input('What is your option:\n1. Add new customer \n2.Modify the customer' 
+                                    '\n3.See all information \n4.Delete customer by name and last name \n5.Exit'))
+        if customer_option == 1:  # check 1
+            first = str(input('What is the customer name: '))  # input for name
+            last = str(input('What is the last name of customer: '))  # input for surname
+            pay = int(input('What is the modified payment of customer: '))  # input for payment
+            customer = Customer(first, last, pay)  # making a customer
+
+            def insert_customer(customer):   # insert functions to insert the data in the database
+                with conn:  # making updates to save
+                    c.execute("INSERT INTO employees VALUES(:first, :last, :pay)", {'first': customer.first, 'last': customer.last, 'pay': customer.pay})
+                    print('Data is inserted')  # execution SQL code
+            insert_customer(customer)  # calling the function
+        elif customer_option == 2:  # check 2
+            first = str(input('What is the customer name: '))  # input for name
+            last = str(input('What is the last name of customer: '))  # input for surname
+            pay = int(input('What is the payment of customer: '))  # input for payment
+            customer = Customer(first, last, pay)  # making a customer
+
+            def modify_customer(customer):  # modification of the customer
+                with conn:  # updating the database
+                    c.execute("""UPDATE employees SET first = :first, last = :last, pay = :pay
+                         WHERE first = :first AND last = :last""", {'first': customer.first, 'last': customer.last, 'pay':
+                    customer.pay})  # execution of the customer, depending on first name and surname
+                    print('The data is modified')  # making sure that's working(if it does not work, it will error)
+            modify_customer(customer)  # calling the function
+        elif customer_option == 3:  # check 3
+            def get_all():  # function to print all result
+                c.execute("SELECT * FROM employees")  # making select statements SQL
+                print(c.fetchall())  # printing to show all results in the list
+            get_all()  # calling the function
+        elif customer_option == 4:  # check 4
+            first = str(input('What is the customer name: '))  # input first
+            last = str(input('What is the last name of customer: '))  # input surname
+            pay = int(input('What is the payment of customer: '))  # input integer payment
+            customer = Customer(first, last, pay)  # making a customer
+
+            def remove_customer(customer):  # function for removing the user
+                with conn:  # updating the database
+                    c.execute("DELETE FROM employees WHERE first = :first AND last = :last", {'first': customer.first, 'last':
+                        customer.last})  # delete code in SQL
+            remove_customer(customer)  # calling the function
+        elif customer_option == 5:  # check 5
+            option() # calling the option function
+        else:
+            print('Invalid syntax.')  # printing invalid syntax if the user will press not conditioned number
+    elif user == 2:  # check 2
+        print('Welcome to the Book menu')  # printing the book menu
+        book_option = int(input('What is your option:\n1. Add new book \n2.Modify the book'  # giving book option
+                                    '\n3.See all information \n4.Delete book by title and author \n5.Exit'))
+        if book_option == 1:  # check 1
+            title = str(input('What is the title: '))  # input title
+            author = str(input('Who is the author: '))  # input author
+            price = int(input('What is the payment of book: '))  # input price
+            book = Book(title, author, price)  # making a book
+
+            def insert_book(book):  # inserting the book in the database
+                with conn:  # updating the database
+                    c.execute("INSERT INTO books VALUES(:title, :author, :price)",  # inserting code in SQL
+                              {'title': book.title, 'author': book.author, 'price': book.price})
+                    print('Data is inserted')  # printing the data
+            insert_book(book)  # calling the function
+        elif book_option == 2:  # check 2
+            title = str(input('What is the title: '))  # input title
+            author = str(input('Who is the author: '))  # input author
+            price = int(input('What is the payment of book: '))  # input the price
+            book = Book(title, author, price)  # making a Book
+
+            def modify_book(book):  # modify the function
+                with conn:  # updating the function
+                    c.execute("""UPDATE books SET title = :title, author = :author, price = :price
+                         WHERE first = :first AND last = :last""", {'first': book.title, 'author': book.author, 'price':
+                    book.price})  # execution of SQL code to update, depending on tittle and author of book
+                    print(c.fetchone())  # printing update
+            modify_book(book)  # calling the function
+        elif book_option == 3:
+            def get_all():  # function to print all result
+                c.execute("SELECT * FROM books")  # execution of SQL code
+                print(c.fetchall())  # printing the outcome
+            get_all()  # calling the function
+        elif book_option == 4:  # check 4
+            title = str(input('What is the title: '))  # input title
+            author = str(input('Who is the author: '))  # input author
+            price = int(input('What is the payment of book(Press just 0): '))  # input the price
+            book = Book(title, author, price)  # making a book
+
+            def remove_customer(book):  # making a function to remove
+                with conn:  # making update the database
+                    c.execute("DELETE FROM books WHERE title = :title AND author = :author",
+                              {'title': book.title, 'author':
+                                  book.author})  # execution of SQL code
+
+            remove_customer(book)  # calling the function
+        elif book_option == 5:  # check 5
+            option()  # option calling
+    elif user == 3: # check 3
+        print('Thank you for testing.')  # exit
+    else:
+        print('Invalid syntax')  # invalid syntax
+        print('Try again...')  # printing try again
+        option()  # calling option
+
+
+conn.commit()  # update
+option()  # calling the main function
+conn.close()  # to close the connections
+
+
+
